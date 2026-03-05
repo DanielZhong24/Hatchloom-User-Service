@@ -18,7 +18,7 @@ The service will be available at http://localhost:8080
 
 ## Documentation
 
-See API_DOCUMENTATION.md for complete API reference and usage examples.
+See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for complete API reference and usage examples.
 
 ## Requirements
 
