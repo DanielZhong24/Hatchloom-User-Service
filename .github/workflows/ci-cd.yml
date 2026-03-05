@@ -17,21 +17,6 @@ jobs:
     name: Run Unit Tests
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_DB: user_service_test_db
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,12 +28,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run Maven clean verify
+      - name: Run Maven clean verify (H2 in-memory database)
         run: mvn clean verify
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/user_service_test_db
-          SPRING_DATASOURCE_USERNAME: test_user
-          SPRING_DATASOURCE_PASSWORD: test_password
+          # Use H2 in-memory database for unit tests (matches src/test/resources/application.properties)
+          SPRING_PROFILES_ACTIVE: test
           JWT_SECRET: test-secret-key-for-ci-cd-pipeline-at-least-256-bits
 
       - name: Upload test reports
