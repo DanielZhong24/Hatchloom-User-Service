@@ -211,6 +211,12 @@ Response (200 OK):
   "profilePictureUrl": "https://example.com/pic.jpg",
   "gradeLevel": "12",
   "specialization": "STEM",
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": 6,
+  "explorerLevelXp": 1240,
+  "currentStreak": 9,
+  "activeVentures": 2,
+  "problemsTackled": 31,
   "createdAt": "2026-03-04T23:00:00",
   "updatedAt": "2026-03-04T23:15:00"
 }
@@ -219,6 +225,7 @@ Response (200 OK):
 Authorization:
 - Users can view their own profile
 - Only HATCHLOOM_ADMIN and SCHOOL_ADMIN can view any profile
+- Student-specific fields (`lastActive`, `skillsCertified`, `explorerLevelXp`, `currentStreak`, `activeVentures`, `problemsTackled`) are returned only for `STUDENT` users
 
 #### PUT /profile/{userId} - Update User Profile
 
@@ -238,7 +245,12 @@ Request:
   "description": "Updated description",
   "profilePictureUrl": "https://example.com/new-pic.jpg",
   "gradeLevel": "12",
-  "specialization": "STEM"
+  "specialization": "STEM",
+  "skillsCertified": 7,
+  "explorerLevelXp": 1350,
+  "currentStreak": 10,
+  "activeVentures": 3,
+  "problemsTackled": 40
 }
 ```
 
@@ -254,6 +266,12 @@ Response (200 OK):
   "profilePictureUrl": "https://example.com/new-pic.jpg",
   "gradeLevel": "12",
   "specialization": "STEM",
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": 7,
+  "explorerLevelXp": 1350,
+  "currentStreak": 10,
+  "activeVentures": 3,
+  "problemsTackled": 40,
   "createdAt": "2026-03-04T23:00:00",
   "updatedAt": "2026-03-04T23:20:00"
 }
@@ -261,7 +279,7 @@ Response (200 OK):
 
 Authorization:
 - Users can only update their own profile
-- Read-only fields: username, email, role, createdAt
+- Read-only fields: `username`, `email`, `role`, `createdAt`, `lastActive` (`lastActive` is updated on successful login)
 
 #### GET /profile?page=0&size=20 - List All Profiles (Admin Only)
 
@@ -433,6 +451,9 @@ Response (200 OK):
 }
 ```
 
+Notes:
+- On successful login, the student's `lastActive` field is automatically set to the current timestamp.
+
 #### Step 3: View Own Profile (Student)
 
 Request:
@@ -453,6 +474,12 @@ Response (200 OK):
   "profilePictureUrl": null,
   "gradeLevel": null,
   "specialization": null,
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": null,
+  "explorerLevelXp": null,
+  "currentStreak": null,
+  "activeVentures": null,
+  "problemsTackled": null,
   "createdAt": "2026-03-05T10:00:00",
   "updatedAt": "2026-03-05T10:00:00"
 }
@@ -470,7 +497,12 @@ curl -X PUT http://localhost:8080/profile/a1b2c3d4-e5f6-4a5b-8c9d-1e2f3a4b5c6d \
     "description": "10th grade student interested in STEM",
     "profilePictureUrl": "https://example.com/emma.jpg",
     "gradeLevel": "10",
-    "specialization": "Computer Science"
+    "specialization": "Computer Science",
+    "skillsCertified": 3,
+    "explorerLevelXp": 520,
+    "currentStreak": 4,
+    "activeVentures": 1,
+    "problemsTackled": 12
   }'
 ```
 
@@ -486,6 +518,12 @@ Response (200 OK):
   "profilePictureUrl": "https://example.com/emma.jpg",
   "gradeLevel": "10",
   "specialization": "Computer Science",
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": 3,
+  "explorerLevelXp": 520,
+  "currentStreak": 4,
+  "activeVentures": 1,
+  "problemsTackled": 12,
   "createdAt": "2026-03-05T10:00:00",
   "updatedAt": "2026-03-05T10:15:00"
 }
@@ -857,6 +895,12 @@ Response (200 OK):
   "profilePictureUrl": "https://example.com/emma.jpg",
   "gradeLevel": "10",
   "specialization": "Computer Science",
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": 6,
+  "explorerLevelXp": 1240,
+  "currentStreak": 9,
+  "activeVentures": 2,
+  "problemsTackled": 31,
   "createdAt": "2026-03-05T10:00:00",
   "updatedAt": "2026-03-05T10:15:00"
 }
@@ -1109,6 +1153,12 @@ Response (200 OK):
   "profilePictureUrl": "https://example.com/emma.jpg",
   "gradeLevel": "10",
   "specialization": "Computer Science",
+  "lastActive": "2026-03-08T15:45:21",
+  "skillsCertified": 6,
+  "explorerLevelXp": 1240,
+  "currentStreak": 9,
+  "activeVentures": 2,
+  "problemsTackled": 31,
   "createdAt": "2026-03-05T10:00:00",
   "updatedAt": "2026-03-05T10:15:00"
 }
@@ -1463,5 +1513,3 @@ Spring Boot: https://spring.io/projects/spring-boot
 Spring Security: https://spring.io/projects/spring-security
 JWT (JJWT): https://github.com/jwtk/jjwt
 PostgreSQL: https://www.postgresql.org/docs/
-
-
