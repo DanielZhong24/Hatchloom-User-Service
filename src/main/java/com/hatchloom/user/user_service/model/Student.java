@@ -20,7 +20,6 @@ public class Student extends User {
 
     @Column(nullable = false)
     private Integer age;
-
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     private Parent parent;

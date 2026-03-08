@@ -4,6 +4,7 @@ import com.hatchloom.user.user_service.dto.*;
 import com.hatchloom.user.user_service.model.*;
 import com.hatchloom.user.user_service.repository.ParentRepository;
 import com.hatchloom.user.user_service.repository.StudentRepository;
+import com.hatchloom.user.user_service.repository.UserProfileRepository;
 import com.hatchloom.user.user_service.repository.UserRepository;
 import com.hatchloom.user.user_service.security.SessionManager;
 import com.hatchloom.user.user_service.security.SessionToken;
@@ -27,6 +28,9 @@ public class AuthService {
 
     @Autowired
     private ParentRepository parentRepository;
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
     @Autowired
     private SessionManager sessionManager;
@@ -146,22 +150,21 @@ public class AuthService {
 
         if (user instanceof Student || user instanceof SchoolTeacher) {
             profile = new AcademicProfile();
-            ((AcademicProfile) profile).setGradeLevel("Not Set");
-            ((AcademicProfile) profile).setSpecialization("Not Set");
         } else if (user instanceof SchoolAdmin || user instanceof HatchloomAdmin || user instanceof HatchloomTeacher) {
             profile = new ProfessionalProfile();
-            ((ProfessionalProfile) profile).setJobTitle("Not Set");
-            ((ProfessionalProfile) profile).setCompanyName("Not Set");
         } else if (user instanceof Parent) {
             profile = new ProfessionalProfile();
-            ((ProfessionalProfile) profile).setJobTitle("Not Set");
-            ((ProfessionalProfile) profile).setCompanyName("Not Set");
         }
 
         if (profile != null) {
             profile.setUser(user);
             profile.setBio("Bio");
             profile.setDescription("Description");
+
+            // Polymorphic initialization: each profile type sets its own defaults
+            // Pass user so profile can determine Student vs Teacher type
+            profile.initializeDefaults(user);
+
             user.setProfile(profile);
             userRepository.save(user);
         }
@@ -183,6 +186,12 @@ public class AuthService {
                 return LoginResponse.builder()
                         .message("Invalid credentials")
                         .build();
+            }
+
+            // Polymorphic login hook: each profile handles post-login actions (e.g., lastActive update)
+            if (user.getProfile() != null) {
+                user.getProfile().onUserLogin(user);
+                userProfileRepository.save(user.getProfile());
             }
 
             SessionToken tokens = sessionManager.generateSessionTokens(

@@ -41,7 +41,7 @@ public abstract class User {
     @Column(nullable = false)
     private Boolean active;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private UserProfile profile;
 
     @Transient
